@@ -107,29 +107,43 @@ pause;
 initial_theta = zeros(size(X, 2), 1);
 
 % Set regularization parameter lambda to 1 (you should vary this)
-lambda = 1;
+lambda1 = 1;
+lambda2 = 0;
+lambda3 = 100;
 
 % Set Options
 options = optimset('GradObj', 'on', 'MaxIter', 400);
 
 % Optimize
-[theta, J, exit_flag] = ...
-	fminunc(@(t)(costFunctionReg(t, X, y, lambda)), initial_theta, options);
+[theta1, J, exit_flag] = ...
+	fminunc(@(t)(costFunctionReg(t, X, y, lambda1)), initial_theta, options);
+
+[theta2, J, exit_flag] = ...
+	fminunc(@(t)(costFunctionReg(t, X, y, lambda2)), initial_theta, options);
+
+[theta3, J, exit_flag] = ...
+	fminunc(@(t)(costFunctionReg(t, X, y, lambda3)), initial_theta, options);
+
+% Plot Data
+plotData(X(:,2:3), y);
 
 % Plot Boundary
-plotDecisionBoundary(theta, X, y);
+plotDecisionBoundary(theta1, X, y, 'r');
+plotDecisionBoundary(theta2, X, y, 'b');
+plotDecisionBoundary(theta3, X, y, 'c');
+
 hold on;
-title(sprintf('lambda = %g', lambda))
+title(sprintf('regularized', lambda))
 
 % Labels and Legend
 xlabel('Microchip Test 1')
 ylabel('Microchip Test 2')
 
-legend('y = 1', 'y = 0', 'Decision boundary')
+legend('y = 1', 'y = 0', 'lambda = 1', 'lambda = 0', 'lambda = 100')
 hold off;
 
 % Compute accuracy on our training set
-p = predict(theta, X);
+p = predict(theta1, X);
 
 fprintf('Train Accuracy: %f\n', mean(double(p == y)) * 100);
 fprintf('Expected accuracy (with lambda = 1): 83.1 (approx)\n');
