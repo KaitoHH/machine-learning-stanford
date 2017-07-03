@@ -61,8 +61,8 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-
-z2 = [ones(m, 1) X] * Theta1';
+a1 = [ones(m, 1) X];
+z2 = a1 * Theta1';
 a2 = sigmoid(z2);
 a2 = [ones(m, 1) a2];
 z3 = a2 * Theta2';
@@ -74,6 +74,12 @@ J = -1 / m * sum(sum(y_unroll .* log(a3)+ (1 - y_unroll) .* log(1 - a3))) ...
     + sum(sum(Theta2(:, 2:end) .^ 2 )));
 
 % -------------------------------------------------------------
+delta_3 = a3 - y_unroll;
+delta_2 = delta_3 * Theta2(:, 2:end) .* sigmoidGradient(z2);
+DELTA2 = delta_3' * a2;
+DELTA1 = delta_2' * a1;
+Theta1_grad = DELTA1 / m + lambda / m * [zeros(hidden_layer_size, 1), Theta1(:, 2:end)];
+Theta2_grad = DELTA2 / m + lambda / m * [zeros(num_labels, 1), Theta2(:, 2:end)];
 
 % =========================================================================
 
