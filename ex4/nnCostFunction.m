@@ -62,23 +62,16 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+z2 = [ones(m, 1) X] * Theta1';
+a2 = sigmoid(z2);
+a2 = [ones(m, 1) a2];
+z3 = a2 * Theta2';
+a3 = sigmoid(z3);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+y_unroll = [1:num_labels] == y;
+J = -1 / m * sum(sum(y_unroll .* log(a3)+ (1 - y_unroll) .* log(1 - a3))) ...
+    + lambda / (2 * m) * (sum(sum(Theta1(:, 2:end) .^ 2)) ...
+    + sum(sum(Theta2(:, 2:end) .^ 2 )));
 
 % -------------------------------------------------------------
 
